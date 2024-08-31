@@ -44,7 +44,6 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 
 /**
  * Provides protection to islands
@@ -157,7 +156,7 @@ public class DistrictGuard implements Listener {
 	// Check if they are wielding a golden hoe
 	if (player.getItemInHand() != null) {
 	    Utils.logger(2,"Item in hand");
-	    if (!player.getItemInHand().getType().equals(Material.GOLD_HOE)) {
+        if (!player.getItemInHand().getType().equals(Material.GOLDEN_HOE)) {
 		// no longer holding a golden hoe
 		Utils.logger(2,"No longer holding hoe");
 		if (plugin.getPos1s().containsKey(player.getUniqueId())) {
@@ -278,7 +277,7 @@ public class DistrictGuard implements Listener {
 	final UUID playerUUID = p.getUniqueId();
 	// Get the item in their hand
 	ItemStack itemInHand = p.getItemInHand();
-	if (itemInHand == null || !itemInHand.getType().equals(Material.GOLD_HOE)) {
+    if (itemInHand == null || !itemInHand.getType().equals(Material.GOLDEN_HOE)) {
 	    Utils.logger(2,"No hoe");
 	    return;
 	}
@@ -709,10 +708,10 @@ public class DistrictGuard implements Listener {
 	    return;
 	}
 	// Ignore stationary to non-stationary
-	if (e.getBlock().getType().equals(Material.STATIONARY_WATER) && e.getToBlock().getType().equals(Material.WATER) ) {
+    if (e.getBlock().getType().equals(Material.WATER) && e.getToBlock().getType().equals(Material.WATER)) {
 	    return;
 	}
-	if (e.getBlock().getType().equals(Material.STATIONARY_LAVA) && e.getToBlock().getType().equals(Material.LAVA) ) {
+    if (e.getBlock().getType().equals(Material.LAVA) && e.getToBlock().getType().equals(Material.LAVA)) {
 	    return;
 	}
 	    // Get To and From Districts
@@ -790,20 +789,20 @@ public class DistrictGuard implements Listener {
 	    Utils.logger(2,"DEBUG: Material " + e.getMaterial());
 
 	    switch (e.getClickedBlock().getType()) {
-	    case WOODEN_DOOR:
+        case OAK_DOOR:
 	    case SPRUCE_DOOR:
 	    case ACACIA_DOOR:
 	    case DARK_OAK_DOOR:
 	    case BIRCH_DOOR:
 	    case JUNGLE_DOOR:
-	    case TRAP_DOOR:
+        case OAK_TRAPDOOR:
 		if (!d.getAllowDoorUse(e.getPlayer().getUniqueId())) {
 		    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
 		    e.setCancelled(true);
 		    return; 
 		}
 		break;
-	    case FENCE_GATE:
+    case OAK_FENCE_GATE:
 	    case SPRUCE_FENCE_GATE:
 	    case ACACIA_FENCE_GATE:
 	    case DARK_OAK_FENCE_GATE:
@@ -822,7 +821,7 @@ public class DistrictGuard implements Listener {
 	    case DROPPER:
 	    case HOPPER:
 	    case HOPPER_MINECART:
-	    case STORAGE_MINECART:
+            //case STORAGE_MINECART:
 	    case WHITE_SHULKER_BOX:
 	    case ORANGE_SHULKER_BOX:
 	    case MAGENTA_SHULKER_BOX:
@@ -831,7 +830,7 @@ public class DistrictGuard implements Listener {
 	    case LIME_SHULKER_BOX:
 	    case PINK_SHULKER_BOX:
 	    case GRAY_SHULKER_BOX:
-	    case SILVER_SHULKER_BOX:
+            //case SILVER_SHULKER_BOX:
 	    case CYAN_SHULKER_BOX:
 	    case PURPLE_SHULKER_BOX:
 	    case BLUE_SHULKER_BOX:
@@ -845,7 +844,7 @@ public class DistrictGuard implements Listener {
 		    return; 
 		}
 		break;
-	    case SOIL:
+    case DIRT:
 		if (!d.getAllowCropTrample(e.getPlayer().getUniqueId())) {
 		    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
 		    e.setCancelled(true);
@@ -860,23 +859,23 @@ public class DistrictGuard implements Listener {
 		    return; 
 		}
 		break;
-	    case CAKE_BLOCK:
+    case CAKE:
 		break;
-	    case DIODE:
-	    case DIODE_BLOCK_OFF:
-	    case DIODE_BLOCK_ON:
-	    case REDSTONE_COMPARATOR_ON:
-	    case REDSTONE_COMPARATOR_OFF:
-		if (!d.getAllowRedStone(e.getPlayer().getUniqueId())) {
-		    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
-		    e.setCancelled(true);
-		    return; 
-		}
-		break;
-	    case ENCHANTMENT_TABLE:
-		break;
+    /*
+    case DIODE:
+    case DIODE_BLOCK_OFF:
+    case DIODE_BLOCK_ON:
+    case REDSTONE_COMPARATOR_ON:
+    case REDSTONE_COMPARATOR_OFF:
+    if (!d.getAllowRedStone(e.getPlayer().getUniqueId())) {
+    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
+    e.setCancelled(true);
+    return; 
+    }
+    break;
+    case ENCHANTMENT_TABLE:
+    break;*/
 	    case FURNACE:
-	    case BURNING_FURNACE:
 		if (!d.getAllowFurnaceUse(e.getPlayer().getUniqueId())) {
 		    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
 		    e.setCancelled(true);
@@ -903,7 +902,7 @@ public class DistrictGuard implements Listener {
 	    case PACKED_ICE:
 		break;
 	    case STONE_BUTTON:
-	    case WOOD_BUTTON:
+        case OAK_BUTTON:
 	    case LEVER:
 		if (!d.getAllowLeverButtonUse(e.getPlayer().getUniqueId())) {
 		    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
@@ -913,7 +912,7 @@ public class DistrictGuard implements Listener {
 		break;
 	    case TNT:
 		break;
-	    case WORKBENCH:
+    case CRAFTING_TABLE:
 		if (!d.getAllowCrafting(e.getPlayer().getUniqueId())) {
 		    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
 		    e.setCancelled(true);
@@ -932,7 +931,8 @@ public class DistrictGuard implements Listener {
 		return;
 	    }
 
-	    if (e.getMaterial().equals(Material.BOAT) && (e.getClickedBlock() != null && !e.getClickedBlock().isLiquid())) {
+        if (e.getMaterial().equals(Material.OAK_BOAT)
+                && (e.getClickedBlock() != null && !e.getClickedBlock().isLiquid())) {
 		// Trying to put a boat on non-liquid
 		e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
 		e.setCancelled(true);
@@ -946,21 +946,22 @@ public class DistrictGuard implements Listener {
 		return;
 	    } else if (e.getMaterial().equals(Material.POTION) && e.getItem().getDurability() != 0) {
 		// Potion
-		Utils.logger(2,"DEBUG: potion");
-		try {
-		    Potion p = Potion.fromItemStack(e.getItem());
-		    if (!p.isSplash()) {
-			Utils.logger(2,"DEBUG: not a splash potion");
-			return;
-		    } else {
-			// Splash potions are allowed only if PVP is allowed
-			if (!d.getAllowPVP()) {
-			    e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
-			    e.setCancelled(true);
-			}
-		    }
-		} catch (Exception ex) {
-		}
+        /*
+        Utils.logger(2,"DEBUG: potion");
+        try {
+        Potion p = Potion.fromItemStack(e.getItem());
+        if (!p.isSplash()) {
+        Utils.logger(2,"DEBUG: not a splash potion");
+        return;
+        } else {
+        // Splash potions are allowed only if PVP is allowed
+        if (!d.getAllowPVP()) {
+        e.getPlayer().sendMessage(ChatColor.RED + Locale.errordistrictProtected);
+        e.setCancelled(true);
+        }
+        }
+        } catch (Exception ex) {
+        }*/
 	    }
 	    // Everything else is okay
 	}
@@ -970,9 +971,10 @@ public class DistrictGuard implements Listener {
     public void onInfoPanelClick(final InventoryClickEvent e) {
 	// Check that it is a control panel
 	Inventory panel = e.getInventory();
-	if (!panel.getName().equals(Locale.infoPanelTitle)) {
-	    return;
-	}
+    /*
+    if (!panel.getName().equals(Locale.infoPanelTitle)) {
+    return;
+    }*/
 	// Check the right worlds
 	if (!Settings.worldName.isEmpty() && !Settings.worldName.contains(e.getWhoClicked().getWorld().getName())) {
 	    return;
@@ -1054,9 +1056,10 @@ public class DistrictGuard implements Listener {
     public void onControlPanelClick(final InventoryClickEvent e) {
 	// Check that it is a control panel
 	Inventory panel = e.getInventory();
-	if (!panel.getName().equals(ChatColor.translateAlternateColorCodes('&', Locale.controlpaneltitle))) {
-	    return;
-	}
+    /*
+    if (!panel.getName().equals(ChatColor.translateAlternateColorCodes('&', Locale.controlpaneltitle))) {
+    return;
+    }*/
 	// Check the right worlds
 	if (!Settings.worldName.isEmpty() && !Settings.worldName.contains(e.getWhoClicked().getWorld().getName())) {
 	    return;

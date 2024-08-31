@@ -3,19 +3,14 @@ package com.wasteofplastic.districts;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,14 +28,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import net.milkbowl.vault.economy.EconomyResponse;
 
 /**
  * This plugin offers protection for areas of blocks (districts). Districts are rectangular
@@ -754,12 +744,13 @@ public class Districts extends JavaPlugin {
 	locale = YamlConfiguration.loadConfiguration(localeFile);
 
 	// Look for defaults in the jar
-	InputStream defLocaleStream = this.getResource("locale.yml");
-	if (defLocaleStream != null) {
-	    Reader defLocaleReader = new InputStreamReader(defLocaleStream);
-	    YamlConfiguration defLocale = YamlConfiguration.loadConfiguration(defLocaleReader);
-	    locale.setDefaults(defLocale);
-	}
+    /*
+    InputStream defLocaleStream = this.getResource("locale.yml");
+    if (defLocaleStream != null) {
+    Reader defLocaleReader = new InputStreamReader(defLocaleStream);
+    YamlConfiguration defLocale = YamlConfiguration.loadConfiguration(defLocaleReader);
+    locale.setDefaults(defLocale);
+    }*/
     }
 
     /**
@@ -903,24 +894,26 @@ public class Districts extends JavaPlugin {
     public boolean checkDistrictIntersection(Location pos1, Location pos2) {
 	//getLogger().info("DEBUG: checking district intersection " + pos1 + " " + pos2);
 	if (worldGuard) {
-	    //getLogger().info("DEBUG:worldguard is true");
-	    // Check if the district overlaps a worldguard region
-	    RegionContainer container = getWorldGuard().getRegionContainer();
-	    RegionManager regions = container.get(pos1.getWorld());
-	    BlockVector min = new BlockVector(pos1.getBlockX(), 0, pos1.getBlockZ());
-	    BlockVector max = new BlockVector(pos2.getBlockX(), pos2.getWorld().getMaxHeight(), pos2.getBlockZ());
-	    ProtectedRegion test = new ProtectedCuboidRegion("dummy", min, max);
-	    /*
-	    Collection<ProtectedRegion> c = regions.getRegions().values();
-	    getLogger().info("C = " + c);
-	    List<ProtectedRegion> intersecting = test.getIntersectingRegions(c);*/
-	    ApplicableRegionSet intersecting = regions.getApplicableRegions(test);
-	    if (!intersecting.getRegions().isEmpty()) {
-		// District will overlap a worldguard region
-		Utils.logger(2, "District overlaps WG region");
-		return true;
-	    }
-	    //getLogger().info("DEBUG: Regions are empty");
+        /*
+        //getLogger().info("DEBUG:worldguard is true");
+        // Check if the district overlaps a worldguard region
+        RegionContainer container = getWorldGuard().getRegionContainer();
+        RegionManager regions = container.get(pos1.getWorld());
+        BlockVector min = new BlockVector(pos1.getBlockX(), 0, pos1.getBlockZ());
+        BlockVector max = new BlockVector(pos2.getBlockX(), pos2.getWorld().getMaxHeight(), pos2.getBlockZ());
+        ProtectedRegion test = new ProtectedCuboidRegion("dummy", min, max);
+        
+        Collection<ProtectedRegion> c = regions.getRegions().values();
+        getLogger().info("C = " + c);
+        List<ProtectedRegion> intersecting = test.getIntersectingRegions(c);
+        ApplicableRegionSet intersecting = regions.getApplicableRegions(test);
+        if (!intersecting.getRegions().isEmpty()) {
+        // District will overlap a worldguard region
+        Utils.logger(2, "District overlaps WG region");
+        return true;
+        }
+        //getLogger().info("DEBUG: Regions are empty");
+        */
 	}
 	// Create a 2D rectangle of this
 	Rectangle2D.Double rect = new Rectangle2D.Double();
@@ -1036,17 +1029,17 @@ public class Districts extends JavaPlugin {
 	//}
 	// New panel map
 	HashMap<String,Material> icons = new HashMap<String,Material>();
-	icons.put("allowShearing",Material.WOOL);
-	icons.put("allowGateUse", Material.FENCE_GATE);
+    icons.put("allowShearing", Material.CYAN_WOOL);
+    icons.put("allowGateUse", Material.ACACIA_FENCE_GATE);
 	icons.put("allowBucketUse", Material.BUCKET);
 	icons.put("allowChestAccess", Material.CHEST);
 	icons.put("allowRedStone", Material.REDSTONE);
 	icons.put("allowEnderPearls", Material.ENDER_PEARL);
 	icons.put("allowFurnaceUse", Material.FURNACE);
-	icons.put("allowCrafting", Material.WORKBENCH);
-	icons.put("allowBedUse", Material.BED);
-	icons.put("allowBrewing", Material.BREWING_STAND_ITEM);
-	icons.put("allowDoorUse", Material.TRAP_DOOR);
+    icons.put("allowCrafting", Material.CRAFTING_TABLE);
+    icons.put("allowBedUse", Material.BLUE_BED);
+    icons.put("allowBrewing", Material.BREWING_STAND);
+    icons.put("allowDoorUse", Material.DARK_OAK_TRAPDOOR);
 	icons.put("allowMusic", Material.JUKEBOX);
 	icons.put("allowPVP", Material.DIAMOND_SWORD);
 	icons.put("allowLeverButtonUse", Material.LEVER);
@@ -1057,7 +1050,7 @@ public class Districts extends JavaPlugin {
 	List<CPItem> cp = new ArrayList<CPItem>();
 	int slot = 0;
 	// Common options
-	ItemStack playerSkull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+    ItemStack playerSkull = new ItemStack(Material.PLAYER_HEAD, 1);
 	SkullMeta meta = (SkullMeta) playerSkull.getItemMeta();
 	meta.setOwner(player.getName());
 	playerSkull.setItemMeta(meta);
@@ -1073,15 +1066,17 @@ public class Districts extends JavaPlugin {
 
 	// If we are not in a district just offer the claim options
 	if (d == null) {
-	    cp.add(new CPItem(Material.GOLD_HOE, 0, "Claim", plugin.players.getVisualize(player.getUniqueId()), slot++, null, CPItem.Type.CLAIM));
+        cp.add(new CPItem(Material.GOLDEN_HOE, 0, "Claim", plugin.players.getVisualize(player.getUniqueId()), slot++,
+                null, CPItem.Type.CLAIM));
 	} else {
 	    // Put naming in the first few slots
 	    // TODO: Fix it so that Ops and Admins can change claims
 	    // If this is a rented district, then owner can only look at the name
 	    if (d.getOwner().equals(player.getUniqueId()) && d.getRenter() != null) {
-		cp.add(new CPItem(Material.BOOK_AND_QUILL, 0, "Rented District",false,slot++, Utils.chop(ChatColor.WHITE,d.getEnterMessage(),20), CPItem.Type.INFO));
+            cp.add(new CPItem(Material.WRITTEN_BOOK, 0, "Rented District", false, slot++,
+                    Utils.chop(ChatColor.WHITE, d.getEnterMessage(), 20), CPItem.Type.INFO));
 	    } else {
-		cp.add(new CPItem(Material.BOOK_AND_QUILL, 0, "Name district",false,slot++, null, CPItem.Type.TEXT));
+            cp.add(new CPItem(Material.WRITTEN_BOOK, 0, "Name district", false, slot++, null, CPItem.Type.TEXT));
 	    }
 	    // Add other commands here
 	    if ((d.getOwner().equals(player.getUniqueId()) && d.getRenter() == null)
@@ -1095,28 +1090,28 @@ public class Districts extends JavaPlugin {
 		    List<String> trusted = d.getOwnerTrusted();
 		    if (!trusted.isEmpty()) {
 			trusted.add(0, ChatColor.GREEN + "Owner's trusted players:");
-			cp.add(new CPItem(Material.SKULL_ITEM, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
-			cp.add(new CPItem(Material.SKULL_ITEM, 4, "Untrust players", false, slot++, null, CPItem.Type.UNTRUST));
+            cp.add(new CPItem(Material.PLAYER_HEAD, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
+            cp.add(new CPItem(Material.PLAYER_HEAD, 4, "Untrust players", false, slot++, null, CPItem.Type.UNTRUST));
 		    } else {
 			trusted.addAll(Utils.chop(ChatColor.YELLOW,"Trusting allows full access to district",20));
-			cp.add(new CPItem(Material.SKULL_ITEM, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
+            cp.add(new CPItem(Material.PLAYER_HEAD, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
 		    }    
 		} else if (d.getRenter() != null && VaultHelper.checkPerm(player, "districts.advancedplayer") || player.isOp() || VaultHelper.checkPerm(player, "districts.admin")) {
 		    List<String> trusted = d.getRenterTrusted();
 		    if (!trusted.isEmpty()) {
 			trusted.add(0, ChatColor.GREEN + "Renter's trusted players:");
-			cp.add(new CPItem(Material.SKULL_ITEM, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
-			cp.add(new CPItem(Material.SKULL_ITEM, 4, "Untrust players", false, slot++, null, CPItem.Type.UNTRUST));
+            cp.add(new CPItem(Material.PLAYER_HEAD, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
+            cp.add(new CPItem(Material.PLAYER_HEAD, 4, "Untrust players", false, slot++, null, CPItem.Type.UNTRUST));
 		    } else {
 			trusted.addAll(Utils.chop(ChatColor.YELLOW,"Trusting allows full access to district",20));
-			cp.add(new CPItem(Material.SKULL_ITEM, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
+            cp.add(new CPItem(Material.PLAYER_HEAD, 3, "Trust players", false, slot++, trusted, CPItem.Type.TRUST));
 		    }
 		}
 		// Only applicable if there is an economy
 		if (VaultHelper.setupEconomy() && VaultHelper.checkPerm(player, "districts.advancedplayer") || player.isOp() || VaultHelper.checkPerm(player, "districts.admin")) {
 		    // Only allow these if there is no renter and the owner is doing it and they are not already on sale or rent
 		    if (!d.isForSale() && !d.isForRent() && d.getOwner().equals(player.getUniqueId()) && d.getRenter() == null) {
-			cp.add(new CPItem(Material.EMPTY_MAP, 0, "Sell District", false, slot++, null, CPItem.Type.SELL));
+                cp.add(new CPItem(Material.MAP, 0, "Sell District", false, slot++, null, CPItem.Type.SELL));
 			cp.add(new CPItem(Material.IRON_INGOT, 0, "Rent District", false, slot++, null, CPItem.Type.RENT));
 		    } else {
 			// Renter options:
@@ -1199,17 +1194,17 @@ public class Districts extends JavaPlugin {
 	}
 	// New panel map
 	HashMap<String,Material> icons = new HashMap<String,Material>();
-	icons.put("allowShearing",Material.WOOL);
-	icons.put("allowGateUse", Material.FENCE_GATE);
+    icons.put("allowShearing", Material.CYAN_WOOL);
+    icons.put("allowGateUse", Material.ACACIA_FENCE_GATE);
 	icons.put("allowBucketUse", Material.BUCKET);
 	icons.put("allowChestAccess", Material.CHEST);
 	icons.put("allowRedStone", Material.REDSTONE);
 	icons.put("allowEnderPearls", Material.ENDER_PEARL);
 	icons.put("allowFurnaceUse", Material.FURNACE);
-	icons.put("allowCrafting", Material.WORKBENCH);
-	icons.put("allowBedUse", Material.BED);
-	icons.put("allowBrewing", Material.BREWING_STAND_ITEM);
-	icons.put("allowDoorUse", Material.TRAP_DOOR);
+    icons.put("allowCrafting", Material.CRAFTING_TABLE);
+    icons.put("allowBedUse", Material.BLUE_BED);
+    icons.put("allowBrewing", Material.BREWING_STAND);
+    icons.put("allowDoorUse", Material.DARK_OAK_TRAPDOOR);
 	icons.put("allowMusic", Material.JUKEBOX);
 	icons.put("allowPVP", Material.DIAMOND_SWORD);
 	icons.put("allowLeverButtonUse", Material.LEVER);
@@ -1235,9 +1230,11 @@ public class Districts extends JavaPlugin {
 	    }
 	    if (owner != null) {
 
-		ip.add(new IPItem(Material.SKULL_ITEM, 3,  "Owner: " + owner.getDisplayName(), false, slot++, trusted, IPItem.Type.INFO));
+            ip.add(new IPItem(Material.PLAYER_HEAD, 3, "Owner: " + owner.getDisplayName(), false, slot++, trusted,
+                    IPItem.Type.INFO));
 	    } else {
-		ip.add(new IPItem(Material.SKULL_ITEM, 3,  "Owner: " + plugin.players.getName(o), false, slot++, trusted, IPItem.Type.INFO));		
+            ip.add(new IPItem(Material.PLAYER_HEAD, 3, "Owner: " + plugin.players.getName(o), false, slot++, trusted,
+                    IPItem.Type.INFO));
 	    }
 	}
 
@@ -1252,7 +1249,7 @@ public class Districts extends JavaPlugin {
 
 	// For sale
 	if (VaultHelper.setupEconomy() && d.isForSale() && VaultHelper.checkPerm(player, "districts.advancedplayer")) {
-	    ip.add(new IPItem(Material.EMPTY_MAP, 0,  "District For Sale!", false, slot++, 
+        ip.add(new IPItem(Material.MAP, 0, "District For Sale!", false, slot++,
 		    Utils.chop(ChatColor.YELLOW, "Click to buy for " + VaultHelper.econ.format(d.getPrice()), 20), IPItem.Type.BUY));
 	}
 
@@ -1264,9 +1261,11 @@ public class Districts extends JavaPlugin {
 	    }
 	    Player renter = plugin.getServer().getPlayer(r);
 	    if (renter != null) {
-		ip.add(new IPItem(Material.SKULL_ITEM, 3,  "Renter: " + renter.getDisplayName(), false, slot++, trusted, IPItem.Type.INFO));
+            ip.add(new IPItem(Material.PLAYER_HEAD, 3, "Renter: " + renter.getDisplayName(), false, slot++, trusted,
+                    IPItem.Type.INFO));
 	    } else {
-		ip.add(new IPItem(Material.SKULL_ITEM, 3,  "Renter: " + plugin.players.getName(r), false, slot++, trusted, IPItem.Type.INFO));		
+            ip.add(new IPItem(Material.PLAYER_HEAD, 3, "Renter: " + plugin.players.getName(r), false, slot++, trusted,
+                    IPItem.Type.INFO));
 	    }
 	    if (d.isForRent()) {
 		ip.add(new IPItem(Material.GOLD_INGOT, 0,  "Rent: " + VaultHelper.econ.format(d.getPrice()), false, slot++, 
